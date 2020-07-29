@@ -19,7 +19,7 @@ function App() {
       <Footer />
     </div>
   );
-  //Index.js da getById no Index.html
+  //Index.js da getById no Index.html 
 }
 
 export default App;
