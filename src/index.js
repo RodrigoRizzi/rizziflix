@@ -1,11 +1,20 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
+import Home from './pages/home';
+import CadastroVideo from './pages/cadastro/video';
+import { BrowserRouter, Switch, Route } from 'react-router-dom'; //import para a implementação do SPA 
+//--- SWITCH serve como IF (ou switch case) para esolher a rota (URL) da aplicação 
+//--- ROUTE mostra o que renderizará, a página...
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  
+  <BrowserRouter>
+    <Switch> 
+      <Route path="/" component={Home} exact></Route>
+      <Route path="/cadastro/video" component={CadastroVideo} exact></Route>
+      <Route component={() => (<div>Página 404</div>)}></Route>
+    </Switch>    
+  </BrowserRouter>,
   document.getElementById('root')
 );
