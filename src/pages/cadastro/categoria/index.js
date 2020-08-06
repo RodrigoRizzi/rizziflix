@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import PageDefault from '../../../components/pageDefault';
 import FormField from '../../../components/formField';
+import useForm from '../../../hooks/useForm';
 
 function CadastroCategoria() {
 // o use state retorna uma variavel e um função na segunda posição, onde  a função altera o estado da variavel;
-  const [categorias, setCategorias] = useState([]);
+  const { categorias, setCategorias } = useState([]);
 
   const valoresIniciais = {
     nome: '',
@@ -13,27 +14,13 @@ function CadastroCategoria() {
     cor: '#000',
   };
 
-  const [values, setValues] = useState(valoresIniciais);
-
-  function setValue(key, value) {
-    setValues({
-      ...values,
-      [key]: value, // nome: 'valor'
-    });
-  }
-
-  function HandleChange(infosDoEvento) {
-    setValue(
-      infosDoEvento.target.getAttribute('name'),
-      infosDoEvento.target.value,
-    );
-  }
+  const { values, handleChange, clearForm } = useForm(valoresIniciais);
 
   // useEffect() realiza uma ação (efeito) com base em outra ação. Like ajax
 
   useEffect(() => {
     if (window.location.href.includes('localhost')) {
-      const URL = 'http://localhost:8080/categorias';
+      const URL = 'https://rizziflix.herokuapp.com/categorias';
       fetch(URL)
         .then(async (respostaDoServer) => {
           if (respostaDoServer.ok) {
@@ -59,7 +46,7 @@ function CadastroCategoria() {
           ...categorias, // Coloca todos os itens que ja estavam no array "categorias" antes do novo item que será inserido
           values,
         ]);
-        setValues(valoresIniciais);
+        clearForm();
       }}
       >
 
@@ -68,7 +55,7 @@ function CadastroCategoria() {
           type="text"
           value={values.nome}
           name="nome"
-          onChange={HandleChange}
+          onChange={handleChange}
         />
 
         <FormField
@@ -76,7 +63,7 @@ function CadastroCategoria() {
           type="textarea"
           value={values.descricao}
           name="descricao"
-          onChange={HandleChange}
+          onChange={handleChange}
         />
 
         <FormField
@@ -84,7 +71,7 @@ function CadastroCategoria() {
           type="color"
           value={values.cor}
           name="cor"
-          onChange={HandleChange}
+          onChange={handleChange}
         />
 
         <button type="button">Cadastrar</button>
@@ -93,7 +80,7 @@ function CadastroCategoria() {
       <ul>
         {categorias.map((categoria, index) => // foreach
           (
-            <li key={categoria + index}>{categoria.nome}</li>
+            <li key={categoria + index}>{categoria.titulo}</li>
           ))}
       </ul>
 
