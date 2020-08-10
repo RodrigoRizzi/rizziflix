@@ -3,10 +3,11 @@ import { Link } from 'react-router-dom';
 import PageDefault from '../../../components/pageDefault';
 import FormField from '../../../components/formField';
 import useForm from '../../../hooks/useForm';
+import categoriasRepository from '../../../repositories/categorias';
 
 function CadastroCategoria() {
 // o use state retorna uma variavel e um função na segunda posição, onde  a função altera o estado da variavel;
-  const { categorias, setCategorias } = useState([]);
+  const [categorias, setCategorias] = useState([]);
 
   const valoresIniciais = {
     nome: '',
@@ -19,18 +20,11 @@ function CadastroCategoria() {
   // useEffect() realiza uma ação (efeito) com base em outra ação. Like ajax
 
   useEffect(() => {
-    if (window.location.href.includes('localhost')) {
-      const URL = 'https://rizziflix.herokuapp.com/categorias';
-      fetch(URL)
-        .then(async (respostaDoServer) => {
-          if (respostaDoServer.ok) {
-            const resposta = await respostaDoServer.json();
-            setCategorias(resposta);
-            return;
-          }
-          throw new Error('Não foi possível pegar os dados');
-        });
-    }
+    categoriasRepository
+      .getAll()
+      .then((categoriasFromServer) => {
+        setCategorias(categoriasFromServer);
+      });
   }, []);
 
   return (
@@ -42,10 +36,6 @@ function CadastroCategoria() {
 
       <form onSubmit={function handleSubmit(infosDoEvento) {
         infosDoEvento.preventDefault();
-        setCategorias([
-          ...categorias, // Coloca todos os itens que ja estavam no array "categorias" antes do novo item que será inserido
-          values,
-        ]);
         clearForm();
       }}
       >
@@ -78,10 +68,9 @@ function CadastroCategoria() {
       </form>
 
       <ul>
-        {categorias.map((categoria, index) => // foreach
-          (
-            <li key={categoria + index}>{categoria.titulo}</li>
-          ))}
+        {categorias.map((categoria) => ( // foreach
+          <li key={categoria.id}>{categoria.titulo}</li>
+        ))}
       </ul>
 
       <Link to="/">Ir para home</Link>
